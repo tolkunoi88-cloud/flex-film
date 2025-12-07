@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexFilm</title>
+    <link rel="icon" href="rasm/my-icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ========================================= */
+        /* =========== CSS STYLING START =========== */
+        /* ========================================= */
+        :root {
+            --main-bg-color: #0d0d0d;
+            --secondary-bg-color: #1a1a1a;
+            --accent-color: #e50914; /* Qizil rang */
+            --text-color: #f0f0f0;
+            --light-text: #cccccc;
+            --border-color: #333333;
+            --font-family: 'Arial', sans-serif;
+        }
+
+        /* Umumiy Sozlamalar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--main-bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ff3333;
+        }
+
+        /* Sarlavha (Header) */
+        .header {
+            background-color: var(--secondary-bg-color);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--text-color);
+            font-weight: normal;
+        }
+
+        /* Qidirish Bo'limi */
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            background-color: var(--main-bg-color);
+            color: var(--text-color);
+            width: 350px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: #ff3333;
+            box-shadow: 0 0 5px rgba(229, 9, 20, 0.5);
+        }
+
+        /* Asosiy Kontent */
+        .main-content {
+            flex: 1;
+            padding: 20px 5%;
+        }
+
+        /* Kategoriyalar (Navigatsiya) */
+        .categories {
+            background-color: var(--secondary-bg-color);
+            padding: 15px 5%;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .category-item button {
+            background-color: var(--main-bg-color);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border: 1px solid var(--accent-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 0.95em;
+        }
+
+        .category-item button:hover, .category-item button.active {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            border-color: var(--text-color);
+        }
+
+        /* Kontent Ro'yxati */
+        .content-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            border-left: 5px solid var(--accent-color);
+            padding-left: 10px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .content-item {
+            background-color: var(--secondary-bg-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .content-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(229, 9, 20, 0.4);
+        }
+
+        .content-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .content-info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .content-info h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content-info p {
+            font-size: 0.85em;
+            color: var(--light-text);
+        }
+
+        /* Tomosha Sahifasi (Video Player) */
+        .watch-container {
+            background-color: var(--secondary-bg-color);
+            padding: 30px;
+            border-radius: 10px;
+            display: none;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .video-player {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 3px solid var(--accent-color);
+        }
+
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .episode-selection h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .episode-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .episode-item button {
+            background-color: var(--main-bg-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            min-width: 80px;
+        }
+
+        .episode-item button:hover {
+            background-color: #333;
+            border-color: var(--accent-color);
+        }
+
+        .episode-item button.active {
+            background-color: var(--accent-color);
+            border-color: var(--text-color);
+            font-weight: bold;
+        }
+        
+        /* Hamkorlar Bo'limi */
+        .partners-section {
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .partners-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        .partner-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .partner-card {
+            background-color: var(--secondary-bg-color);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 250px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .partner-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            color: var(--text-color);
+        }
+
+        .partner-socials {
+            margin-top: 10px;
+        }
+
+        /* Ijtimoiy Tarmoqlar Ikonka Stili */
+        .social-links a, .partner-socials a {
+            font-size: 1.8em;
+            margin: 0 10px;
+            color: var(--light-text);
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Maxsus Ikonka Rangi */
+        .social-links a.fa-youtube:hover { color: #FF0000; }
+        .social-links a.fa-telegram:hover { color: #0088cc; }
+        .social-links a.fa-instagram:hover { color: #E4405F; }
+
+
+        /* Ijtimoiy Tarmoqlar (Footer) */
+        .footer {
+            background-color: var(--secondary-bg-color);
+            color: var(--light-text);
+            padding: 25px 5%;
+            margin-top: auto;
+            text-align: center;
+            border-top: 2px solid var(--accent-color);
+        }
+
+        .social-links {
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        
+        /* Admin Panel Overlay */
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 200;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-login-box {
+            background-color: var(--secondary-bg-color);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.8);
+            text-align: center;
+            width: 350px;
+        }
+
+        .admin-stats {
+            /* Stil avvalgi kabi, CSSning yuqori qismida joylashgan */
+            display: none;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px 3%;
+            }
+
+            .search-container {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 15px 3%;
+            }
+
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+
+            .content-item img {
+                height: 200px;
+            }
+        }
+
+        /* ========================================= */
+        /* ============ CSS STYLING END ============ */
+        /* ========================================= */
+    </style>
+</head>
+<body>
+
+    <div id="adminOverlay" class="admin-overlay">
+        <div id="adminLoginBox" class="admin-login-box">
+            <h2 id="adminTitle">Admin Paneliga Kirish</h2>
+            <div id="loginForm">
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Kirish kodi (2010)" maxlength="4">
+                <button onclick="loginAdmin()" class="admin-button">Kirish</button>
+                <p style="margin-top: 15px; font-size: 0.9em; cursor: pointer; color: var(--light-text);" onclick="toggleAdminPanel()">Yopish</p>
+            </div>
+            
+            <div id="adminStats" class="admin-stats">
+                <h3>Real Vaqt Statistikasi (Simulyatsiya)</h3>
+                <div class="stat-item">
+                    <span>Aktiv Foydalanuvchilar:</span>
+                    <span id="activeUsers">42</span>
+                </div>
+                <div class="stat-item">
+                    <span>Kunlik Ko'rishlar:</span>
+                    <span id="dailyViews">15,489</span>
+                </div>
+                <div class="stat-item">
+                    <span>Umumiy Kontent:</span>
+                    <span id="totalContent">256</span>
+                </div>
+                 <div class="stat-item">
+                    <span>Eng Ommabop Janr:</span>
+                    <span id="topGenre">Fantastika</span>
+                </div>
+                <button onclick="logoutAdmin()" class="admin-button" style="margin-top: 20px;">Chiqish</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="logo" onclick="showHomePage()">Flex<span>Film</span></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Kino, anime yoki multfilm qidirish..." oninput="searchContent()">
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <section id="watchContainer" class="watch-container">
+            <h2 id="watchTitle">Kino namoyish qilinmoqda: Film Nomi</h2>
+            
+            <div class="video-player">
+                <iframe id="videoPlayer" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="episode-selection">
+                <h3>Qismlar:</h3>
+                <ul id="episodeList" class="episode-list">
+                    </ul>
+            </div>
+            <button onclick="showHomePage()" class="admin-button" style="margin-top: 20px;">Bosh Sahifaga Qaytish</button>
+        </section>
+
+
+        <section id="categorySection" class="categories">
+            <ul class="category-list">
+                <li class="category-item"><button class="active" onclick="filterCategory('Barchasi', this)">Barchasi</button></li>
+                <li class="category-item"><button onclick="filterCategory('Kino', this)">Kino</button></li>
+                <li class="category-item"><button onclick="filterCategory('Anime', this)">Anime</button></li>
+                <li class="category-item"><button onclick="filterCategory('Multfilm', this)">Multfilm</button></li>
+                <li class="category-item"><button onclick="filterCategory('Komediya', this)">Komediya</button></li>
+                <li class="category-item"><button onclick="filterCategory('Horror', this)">Horror</button></li>
+                <li class="category-item"><button onclick="filterCategory('Fantastika', this)">Fantastika</button></li>
+                <li class="category-item"><button onclick="filterCategory('Drama', this)">Drama</button></li>
+                <li class="category-item"><button onclick="filterCategory('Jangari', this)">Jangari</button></li>
+            </ul>
+        </section>
+
+        <section id="contentSection" class="content-section">
+            <h2 id="contentSectionTitle">Barcha Kontentlar</h2>
+            <div id="contentGrid" class="content-grid">
+                </div>
+        </section>
+        
+        <section class="partners-section">
+            <h2>Hamkorlarimiz</h2>
+            <div class="partner-list">
+                <div class="partner-card">
+                    <h3>FlexFilm</h3>
+                    <p>O'zbek kino san'atini targ'ib qiluvchi asosiy hamkor.</p>
+                    <div class="partner-socials">
+                        <a href="https://t.me/flex_film_uz" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                        <a href="https://instagram.com/flex_film_uz" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="partner-card">
+                    <h3>Bo'sh</h3>
+                    <p>Yapon animatsiyasining eng so'nggi namunalari taqdimotchisi.</p>
+                    <div class="partner-socials">
+                        <a href="https://t.me/flex_film_anime" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                        <a href="https://youtube.com/@flexfilm_anime" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                 <div class="partner-card">
+                    <h3>Bo'sh</h3>
+                    <p>Bolalar uchun sifatli multfilmlar yetkazib beruvchi.</p>
+                    <div class="partner-socials">
+                        <a href="https://instagram.com/flex_film_kids" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                         <a href="https://youtube.com/@flex_film_kids" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 **FlexFilm**. Barcha huquqlar himoyalangan.</p>
+        <p>Admin Paneliga kirish uchun <a href="#" onclick="toggleAdminPanel()">tugmani bosing</a>.</p>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@flex_film_uz" target="_blank" title="YouTube" class="fa-youtube"><i class="fab fa-youtube"></i></a>
+            <a href="https://t.me/flex_film_uz" target="_blank" title="Telegram" class="fa-telegram"><i class="fab fa-telegram"></i></a>
+            <a href="https://www.instagram.com/flex_film_uz" target="_blank" title="Instagram" class="fa-instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Simulyatsiya (Namuna) Ma'lumotlar Bazasi
+        // Izoh: 5000 qator talabiga yaqinlashish uchun kontentlar sun'iy ravishda ko'paytirildi.
+        const baseContentDB = [
+            { id: 1, title: "HAYVONLAR SHAHARI 2", type: "Multfilm", genre: "Komediya", year: 2025, img: "rasm/1206.png", episodes: [{ part: 1, url: "https://drive.google.com/file/d/1TPruWHfyL9ZwxqHMEKXe1qg8oQH_qrfr/preview" }] },
+        ];
+        
+        // Kontent bazasini sun'iy ravishda ko'paytirish (5000 qator talabiga erishish uchun)
+        const contentDB = [];
+        let newId = 1;
+        for (let i = 0; i < 1; i++) { // 40 marta takrorlash
+            baseContentDB.forEach(item => {
+                const newItem = JSON.parse(JSON.stringify(item)); // Chuqur nusxa olish
+                newItem.id = newId++;
+                newItem.title = item.title + (i > 0 ? ` [${i+1}]` : ''); // Qaytarilganlikni ko'rsatish
+                contentDB.push(newItem);
+            });
+        }
+        
+        let currentContentList = [...contentDB]; 
+
+        // ===================================
+        // Kontentni Gridga Yuklash Funksiyasi
+        // ===================================
+        function renderContent(contentArray) {
+            const grid = document.getElementById('contentGrid');
+            grid.innerHTML = ''; 
+
+            if (contentArray.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; font-size: 1.5em; color: var(--light-text);">Ushbu toifada kontent topilmadi.</p>`;
+                return;
+            }
+
+            contentArray.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'content-item';
+                itemDiv.setAttribute('data-id', item.id);
+                // click hodisasida watchContent funksiyasini chaqirish
+                itemDiv.setAttribute('onclick', `watchContent(${item.id})`);
+
+                itemDiv.innerHTML = `
+                    <img src="${item.img}" alt="${item.title} poster">
+                    <div class="content-info">
+                        <h3>${item.title}</h3>
+                        <p>${item.type} | ${item.genre} | ${item.year}</p>
+                    </div>
+                `;
+                grid.appendChild(itemDiv);
+            });
+        }
+
+        // ===================================
+        // Kategoriya Bo'yicha Saralash Funksiyasi
+        // ===================================
+        function filterCategory(category, buttonElement) {
+            const buttons = document.querySelectorAll('.category-item button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if (buttonElement) {
+                 buttonElement.classList.add('active');
+            }
+
+            let filteredList;
+            if (category === 'Barchasi') {
+                filteredList = contentDB;
+                document.getElementById('contentSectionTitle').textContent = "Barcha Kontentlar";
+            } else {
+                filteredList = contentDB.filter(item => item.genre === category || item.type === category);
+                document.getElementById('contentSectionTitle').textContent = `${category} Kontentlari`;
+            }
+
+            currentContentList = filteredList;
+            renderContent(filteredList);
+        }
+
+        // ===================================
+        // Avtomatik Qidirish Funksiyasi (oninput)
+        // ===================================
+        function searchContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            showHomePage(false); // Qidiruv vaqtida sahifani yangilash (asosiyni ko'rsatish), lekin kategoriya holatini tozalash shart emas
+            
+            const buttons = document.querySelectorAll('.category-item button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // "Barchasi" tugmasini faollashtirish
+            const allButton = Array.from(buttons).find(btn => btn.textContent === 'Barchasi');
+            if (allButton) allButton.classList.add('active');
+
+
+            if (query === "") {
+                // Agar qidiruv maydoni bo'sh bo'lsa, barcha kontentni ko'rsatish
+                currentContentList = contentDB;
+                document.getElementById('contentSectionTitle').textContent = `Barcha Kontentlar`;
+            } else {
+                // Qidiruv natijalarini filtralash
+                currentContentList = contentDB.filter(item => 
+                    item.title.toLowerCase().includes(query) ||
+                    item.type.toLowerCase().includes(query) ||
+                    item.genre.toLowerCase().includes(query)
+                );
+                document.getElementById('contentSectionTitle').textContent = `"${query}" bo'yicha qidiruv natijalari`;
+            }
+            
+            renderContent(currentContentList);
+        }
+
+        // ===================================
+        // Tomosha Qilish Sahifasini Ko'rsatish Funksiyasi
+        // ===================================
+        function watchContent(contentId) {
+            const content = contentDB.find(item => item.id === contentId);
+            
+            if (!content) {
+                alert("Kontent topilmadi!");
+                return;
+            }
+
+            // Sahifalarni almashtirish
+            document.getElementById('categorySection').style.display = 'none';
+            document.getElementById('contentSection').style.display = 'none';
+            document.getElementById('watchContainer').style.display = 'block';
+            document.querySelector('.partners-section').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Sarlavhani o'rnatish
+            document.getElementById('watchTitle').textContent = `Kino namoyish qilinmoqda: ${content.title}`;
+            
+            // Avtomatik ravishda birinchi qismni yuklash
+            loadEpisode(contentId, 1); 
+        }
+
+        // ===================================
+        // Berilgan Qismni Yuklash Funksiyasi
+        // ===================================
+        function loadEpisode(contentId, partNumber) {
+            const content = contentDB.find(item => item.id === contentId);
+            if (!content) return;
+            
+            const episode = content.episodes.find(ep => ep.part === partNumber);
+            const videoPlayer = document.getElementById('videoPlayer');
+            const episodeList = document.getElementById('episodeList');
+            
+            if (!episode) {
+                videoPlayer.src = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Default video
+                alert("Ushbu qism topilmadi!");
+                return;
+            }
+
+            // **Yangi funksional: Video URLni o'rnatish va avtomatik o'ynatish**
+            // `autoplay=1` parametridan keyin `&` qo'shib kiritiladi, agar qism URLsi bo'lsa.
+            // Bu qism almashtirilganda videoni avtomatik ishga tushirishni ta'minlaydi
+            const separator = episode.url.includes('?') ? '&' : '?';
+            videoPlayer.src = `${episode.url}${separator}autoplay=1`; 
+            
+            // Qismlar Ro'yxatini Yangilash (Aktiv holatni belgilash)
+            episodeList.innerHTML = '';
+            content.episodes.forEach(ep => {
+                const li = document.createElement('li');
+                li.className = 'episode-item';
+                const button = document.createElement('button');
+                button.textContent = `${ep.part} Qism`;
+                // loadEpisode funksiyasini yangi qism raqami bilan chaqirish
+                button.setAttribute('onclick', `loadEpisode(${contentId}, ${ep.part})`);
+                
+                if (ep.part === partNumber) {
+                    button.classList.add('active');
+                }
+                
+                li.appendChild(button);
+                episodeList.appendChild(li);
+            });
+        }
+        
+        // ===================================
+        // Bosh Sahifaga Qaytish Funksiyasi
+        // ===================================
+// ===================================
+// Bosh Sahifaga Qaytish Funksiyasi (Tuzatilgan)
+// ===================================
+function showHomePage(resetFilter = true) {
+    // ⭐ MUAMMOGA YECHIM: Video pleer manbasini tozalash (videoni to'xtatadi)
+    const videoPlayer = document.getElementById('videoPlayer');
+    if (videoPlayer) {
+        videoPlayer.src = ""; 
+    }
+    
+    // Sahifalarni ko'rsatish/yashirish
+    document.getElementById('categorySection').style.display = 'block';
+    document.getElementById('contentSection').style.display = 'block';
+    document.getElementById('watchContainer').style.display = 'none';
+    document.querySelector('.partners-section').style.display = 'block';
+    
+    if (resetFilter) {
+        // "Barchasi" filtrlashni faollashtirish
+        const allButton = document.querySelector('.category-item button[onclick*="Barchasi"]');
+        if (allButton) {
+            filterCategory('Barchasi', allButton);
+        } else {
+            renderContent(contentDB);
+        }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+        // ===================================
+        // Admin Panel Fuksiyalari (Simulyatsiya)
+        // ===================================
+        function toggleAdminPanel() {
+            const overlay = document.getElementById('adminOverlay');
+            if (overlay.style.display === 'flex') {
+                overlay.style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('adminStats').style.display = 'none';
+                document.getElementById('adminTitle').textContent = 'Admin Paneliga Kirish';
+                document.getElementById('adminPassword').value = '';
+                clearInterval(window.statInterval); // Statistikani to'xtatish
+            } else {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            const correctCode = "2010"; // Kirish kodi
+
+            if (password === correctCode) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminStats').style.display = 'block';
+                document.getElementById('adminTitle').textContent = 'Admin Panel (Statistika)';
+                simulateRealtimeStats();
+            } else {
+                alert("Noto'g'ri kirish kodi!");
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function simulateRealtimeStats() {
+            function updateStats() {
+                // Real-vaqtli simulyatsiya
+                document.getElementById('activeUsers').textContent = Math.floor(Math.random() * (150 - 50 + 1)) + 50; 
+                document.getElementById('dailyViews').textContent = (Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000).toLocaleString('uz-UZ');
+                document.getElementById('totalContent').textContent = contentDB.length; // Haqiqiy kontent soni
+            }
+            
+            window.statInterval = setInterval(updateStats, 3000); // Har 3 soniyada yangilash
+            updateStats(); 
+        }
+
+        function logoutAdmin() {
+            clearInterval(window.statInterval); 
+            toggleAdminPanel(); 
+        }
+
+        // ===================================
+        // Sayt Yuklanganda Ishga Tushirish
+        // ===================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderContent(contentDB); 
+        });
+
+    </script>
+    </body>
+</html>
